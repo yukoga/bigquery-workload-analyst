@@ -85,3 +85,6 @@ How to dynamically detect and delegate sub-tasks to other installed environmenta
 ## Strict Safety Guardrails
 - **Zero-Deletion Policy**: Under no circumstances shall this skill or any agent using it delete, truncate, or overwrite local reference scripts, reports, or remote BigQuery tables, datasets, schemas, or billing logs. Always apply safety checks matching `@skill:accidental-data-loss-prevention`.
 - **Zero-Static-Copy Policy**: Never clone or hardcode static copies of analytical reports, spreadsheets, or charts inside this repository. All artifacts must be generated dynamically based on active metadata and customer environments.
+- **Zero-Local-Pollution Policy**: To prevent polluting the user's workspace with untracked code files:
+  - Do **NOT** write or commit temporary chart generation Python scripts (like `plot_job_level_charts.py` or other visualization tests) into the workspace.
+  - Dynamically run scripts through temporary memory files (e.g. `/tmp/generate_charts.py`), run in a Jupyter Notebook cell directly (via `@skill:notebook-guidance`), or delete any temporary testing helper files immediately after the charts have been safely compiled into the output image files.

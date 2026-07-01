@@ -6,6 +6,17 @@
 
 This guide provides clean, optimized, and standalone Python templates for dynamically generating cost analytical plots from first principles. **NEVER** clone or copy static report charts or CSVs; instead, execute these scripts inside a notebook or script to render visualization outputs based on real query logs.
 
+### ⚠️ Workspace Clutter Prevention Rule
+To prevent creating standalone helper files (like `generate_charts.py` or temporary test scripts) in the user's workspace directory, the agent **MUST** execute the Python visualization code using one of the following cleaner methods:
+1. **Interactive Notebook Execution (Preferred)**: Run the plotting code cell-by-cell directly inside a Jupyter Notebook (.ipynb) using the `@skill:notebook-guidance` framework. This keeps all execution logic contained inside the notebook file.
+2. **OS Temporary Directories**: Save any plotting scripts inside the system's temporary directory (e.g., `/tmp/generate_charts.py` on macOS/Linux or standard Windows `tempfile` directories), execute them from there, and immediately clean up (delete) the temporary file after the output images are saved.
+3. **Inline Terminal Execution (Heredoc)**: Run the script inline through the terminal without writing any file to disk by piping a heredoc directly to Python:
+   ```bash
+   python3 - <<'EOF'
+   # matplotlib plotting code goes here...
+   EOF
+   ```
+
 ---
 
 ## 1. Log-Log Scatter Plot Template (Actual vs. Optimal)
