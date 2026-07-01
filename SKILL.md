@@ -56,6 +56,7 @@ Customize all outputs (reports, suggestions, instructions, charts, code comments
 - **Language Detection**: Automatically inspect the user's prompt, git settings, active OS locale, or requested output format. Default to Japanese (`'ja'`) if the user prompts in Japanese, and English (`'en'`) if in English.
 - **Term & Label Mapping**: Translate key metrics and structural definitions correctly across languages (e.g. Japanese `【適正配置】` ⇄ English `【Optimal Allocation】`, `【スロット非効率クエリ】` ⇄ `【Slot-Inefficient Queries】`, `【オンデマンド過剰支払】` ⇄ `【On-Demand Overpayment】`).
 - **Font & Rendering Configuration**: Ensure chart-drawing code dynamically selects standard localized font families supported by the user's OS platform (e.g., `'Arial Unicode MS'` or `'AppleGothic'` on macOS, `'IPAexGothic'` or `'MS Gothic'` on Windows/Linux) to avoid rendering errors or broken characters (tofu) in localized charts.
+- **Mandatory Chart Linkage in Reports**: When generating a final analytical or cost optimization report (in Markdown or HTML), the agent **MUST** ensure that the code blocks from `references/VISUALIZATION_PATTERNS.md` are executed to generate the plots, and both resulting chart images (`bq_breakeven_chart.png` and `bq_confusion_matrix.png`) are physically embedded and linked as visual evidence in the report (using correct relative image links `![](./bq_breakeven_chart.png)` and `![](./bq_confusion_matrix.png)`).
 
 ---
 
