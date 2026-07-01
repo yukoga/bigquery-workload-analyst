@@ -1,0 +1,33 @@
+{
+  "bigquery-workload-analyst": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "INFORMATION_SCHEMA.JOBS",
+        "INFORMATION_SCHEMA.JOBS_BY_PROJECT",
+        "INFORMATION_SCHEMA.JOBS_BY_USER",
+        "INFORMATION_SCHEMA.JOBS_BY_FOLDER",
+        "INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION",
+        "bytes_billed",
+        "slot_sec",
+        "workload management",
+        "resourceViewer",
+        "BigQuery cost",
+        "BigQuery pricing",
+        "slot-seconds",
+        "WLM",
+        "BigQuery reservation"
+      ],
+      "intentPatterns": [
+        "(analyze|optimize|evaluate|forecast|simulate).*?bigquery.*?(cost|pricing|bill|slot|workload)",
+        "INFORMATION_SCHEMA\\.(JOBS_BY_PROJECT|JOBS_BY_USER|JOBS_BY_FOLDER|JOBS_BY_ORGANIZATION|JOBS)"
+      ]
+    },
+    "filePatterns": [
+      "**/bigquery-workload-analyst/**/*.md",
+      "**/references/19092_bigquery_best_practices_and_cost_optimization_whitepaper_v3_ca.pdf"
+    ]
+  }
+}
