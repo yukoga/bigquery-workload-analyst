@@ -6,10 +6,20 @@
 
 This guide provides clean, optimized, and standalone Python templates for dynamically generating cost analytical plots from first principles. **NEVER** clone or copy static report charts or CSVs; instead, execute these scripts inside a notebook or script to render visualization outputs based on real query logs.
 
-### ⚠️ Workspace Clutter Prevention Rule
-To prevent creating standalone helper files (like `generate_charts.py` or temporary test scripts) in the user's workspace directory, the agent **MUST** execute the Python visualization code using one of the following cleaner methods:
-1. **Interactive Notebook Execution (Preferred)**: Run the plotting code cell-by-cell directly inside a Jupyter Notebook (.ipynb) using the `@skill:notebook-guidance` framework. This keeps all execution logic contained inside the notebook file.
-2. **OS Temporary Directories**: Save any plotting scripts inside the system's temporary directory (e.g., `/tmp/generate_charts.py` on macOS/Linux or standard Windows `tempfile` directories), execute them from there, and immediately clean up (delete) the temporary file after the output images are saved.
+### ⚠️ Workspace Clutter Prevention Rule (STRICT)
+To prevent creating standalone helper files (like `generate_charts.py` or temporary test scripts) in the user's workspace directory, the agent **MUST** execute the Python visualization code using one of the following cleaner methods. Writing or saving `.py` script files to the active repository or workspace directories is strictly prohibited:
+1. **Interactive Notebook Cell (Strongly Preferred)**: Run the plotting code cell-by-cell directly inside a Jupyter Notebook (.ipynb) using the `@skill:notebook-guidance` framework. This keeps all execution logic contained inside the notebook file.
+2. **Standard Python `tempfile` Module (No Workspace Writing)**: Instead of manually writing to hardcoded directories, use Python's built-in `tempfile.NamedTemporaryFile` or `tempfile.TemporaryDirectory` module. This ensures scripts are saved to the OS standard hidden temporary folders (completely invisible to the user) and are automatically destroyed by Python as soon as execution completes.
+   ```python
+   import tempfile
+   import os
+   # Example pattern for running and immediately self-deleting script:
+   with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+       f.write(python_code_block)
+       temp_path = f.name
+   # Execute temp_path then...
+   os.unlink(temp_path)
+   ```
 3. **Inline Terminal Execution (Heredoc)**: Run the script inline through the terminal without writing any file to disk by piping a heredoc directly to Python:
    ```bash
    python3 - <<'EOF'
