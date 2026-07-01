@@ -94,32 +94,41 @@ def generate_log_log_scatter(df, threshold_slot_sec_per_tb=375000, output_path="
     
     plt.figure(figsize=(10, 8), dpi=150)
     
-    # Plot Capacity actual points (Blue)
+    # Plot Capacity actual points (Blue) - Color matching plot_job_level_charts.py exactly
     plt.scatter(
         df_cap["slot_sec"], df_cap["data_tb"],
-        color="#4285f4", alpha=0.3, s=8, label=lang_labels["cap_actual"]
+        color="#4285f4", alpha=0.3, s=6, label=lang_labels["cap_actual"]
     )
     
-    # Plot On-Demand actual points (Orange)
+    # Plot On-Demand actual points (Orange) - Color matching plot_job_level_charts.py exactly
     plt.scatter(
         df_od["slot_sec"], df_od["data_tb"],
         color="#f97316", alpha=0.8, s=35, edgecolors="#ffffff", linewidths=0.5,
         label=lang_labels["od_actual"]
     )
     
-    # Plot mathematical Break-Even Lines
+    # Plot mathematical Break-Even Lines (Standard & Enterprise curves from plot_job_level_charts.py)
     x_line = np.logspace(np.log10(df_clean["slot_sec"].min()), np.log10(df_clean["slot_sec"].max()), 100)
-    y_breakeven = x_line / threshold_slot_sec_per_tb
+    y_enterprise = x_line / threshold_slot_sec_per_tb
+    y_standard = x_line / 562500
     
     plt.loglog(
-        x_line, y_breakeven,
+        x_line, y_enterprise,
         color="#4285f4", linestyle="-", linewidth=2,
         label=lang_labels["breakeven_ent"]
     )
     
+    # Draw Standard break-even curve dashed line (Drawn in Standard $0.04/hr from plot_job_level_charts.py)
+    standard_label = f"Break-Even (Standard: 562,500 slots/TB)" if lang == "en" else "損益分岐点 (Standard: $0.04/hr)"
+    plt.loglog(
+        x_line, y_standard,
+        color="#fbbc05", linestyle="--", linewidth=1.5,
+        label=standard_label
+    )
+    
     # Fill optimal zones
-    plt.fill_between(x_line, y_breakeven, 1e4, color="#34a853", alpha=0.05, label=lang_labels["cap_zone"])
-    plt.fill_between(x_line, 1e-12, y_breakeven, color="#ea4335", alpha=0.05, label=lang_labels["od_zone"])
+    plt.fill_between(x_line, y_enterprise, 1e4, color="#34a853", alpha=0.05, label=lang_labels["cap_zone"])
+    plt.fill_between(x_line, 1e-12, y_enterprise, color="#ea4335", alpha=0.05, label=lang_labels["od_zone"])
     
     plt.xscale("log")
     plt.yscale("log")
@@ -130,7 +139,24 @@ def generate_log_log_scatter(df, threshold_slot_sec_per_tb=375000, output_path="
     plt.ylabel(lang_labels["ylabel"], fontsize=11, fontweight="bold", labelpad=10)
     plt.title(lang_labels["title"], fontsize=13, fontweight="bold", pad=15)
     
-    plt.legend(loc="upper left", frameon=True, facecolor="white", edgecolor="#e0e0e0", fontsize=10)
+    # Exact legend mapping and ordering alignment with plot_job_level_charts.py
+    handles, labels_list = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels_list, handles))
+    legend_order = [
+        lang_labels["cap_actual"],
+        lang_labels["od_actual"],
+        lang_labels["breakeven_ent"],
+        standard_label,
+        lang_labels["od_zone"],
+        lang_labels["cap_zone"]
+    ]
+    ordered_handles = [by_label[lbl] for lbl in legend_order if lbl in by_label]
+    ordered_labels = [lbl for lbl in legend_order if lbl in by_label]
+    plt.legend(
+        ordered_handles, ordered_labels,
+        loc="upper left", frameon=True, facecolor="white", edgecolor="#e0e0e0", fontsize=10
+    )
+    
     plt.tight_layout()
     plt.savefig(output_path, dpi=200)
     plt.close()
