@@ -51,6 +51,12 @@ Choose the correct `INFORMATION_SCHEMA` metadata view dynamically depending on t
   - Calculate `bytes_billed` as `MAX(total_bytes_billed)`.
   - Calculate `slot_sec` as `SUM(total_slot_ms) / 1000`.
 
+### Step 4: Dynamic Language & Localization Tuning
+Customize all outputs (reports, suggestions, instructions, charts, code comments, and annotations) dynamically based on the user's preferred language, matching their environment or query language.
+- **Language Detection**: Automatically inspect the user's prompt, git settings, active OS locale, or requested output format. Default to Japanese (`'ja'`) if the user prompts in Japanese, and English (`'en'`) if in English.
+- **Term & Label Mapping**: Translate key metrics and structural definitions correctly across languages (e.g. Japanese `【適正配置】` ⇄ English `【Optimal Allocation】`, `【スロット非効率クエリ】` ⇄ `【Slot-Inefficient Queries】`, `【オンデマンド過剰支払】` ⇄ `【On-Demand Overpayment】`).
+- **Font & Rendering Configuration**: Ensure chart-drawing code dynamically selects standard localized font families supported by the user's OS platform (e.g., `'Arial Unicode MS'` or `'AppleGothic'` on macOS, `'IPAexGothic'` or `'MS Gothic'` on Windows/Linux) to avoid rendering errors or broken characters (tofu) in localized charts.
+
 ---
 
 ## Key Reference Guidelines (Progressive Disclosure)

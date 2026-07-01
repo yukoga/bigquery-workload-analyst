@@ -78,29 +78,29 @@ Assuming On-Demand price $P_{od} = \$6.25 \text{ / TB}$:
 
 ---
 
-## 3. The 4-Quadrant Mismatch Interpretation Matrix
+## 3. The 4-Quadrant Mismatch Interpretation Matrix & Localization
 
-A confusion matrix comparing **Actual Execution Plan** (Capacity vs. On-Demand) and **Cost Model's Optimal Plan** is used to classify query logs.
+A confusion matrix comparing **Actual Execution Plan** (Capacity vs. On-Demand) and **Cost Model's Optimal Plan** is used to classify query logs. When generating reports or charts, dynamically localize the labels based on the target output language using the following mapping:
 
 | Actual \ Optimal | Capacity (Optimal) | On-Demand (Optimal) |
 | :--- | :--- | :--- |
-| **Capacity (Reservation)** | **[1] 適正配置 (Optimal)**<br>Low-slot-ratio large queries executed on slot pools. | **[2] スロット非効率 (Slot-Inefficient)**<br>High-slot-ratio small queries on reservation. |
-| **On-Demand** | **[3] オンデマンド過剰支払 (Overpayment)**<br>Heavy queries running on On-Demand billing. | **[4] 適正配置 (Optimal)**<br>Lightweight high-intensity compute queries. |
+| **Capacity (Reservation)** | **[1] Localized: [Optimal / 適正配置]**<br>Low-slot-ratio large queries executed on slot pools. | **[2] Localized: [Slot-Inefficient / スロット非効率クエリ]**<br>High-slot-ratio small queries on reservation. |
+| **On-Demand** | **[3] Localized: [On-Demand Overpayment / オンデマンド過剰支払]**<br>Heavy queries running on On-Demand billing. | **[4] Localized: [Optimal / 適正配置]**<br>Lightweight high-intensity compute queries. |
 
-### Classification Actions & Remedies
+### Classification Actions & Remedies (Multilingual Explanations)
 
-#### Quadrant [1]: Capacity Actual & Capacity Optimal (【適正配置】)
+#### Quadrant [1]: Capacity Actual & Capacity Optimal (JP: 【適正配置】 / EN: 【Optimal Allocation】)
 * **Diagnosis**: High-volume, high-throughput queries efficiently routed.
 * **Action**: Maintain current routing setup.
 
-#### Quadrant [2]: Capacity Actual & On-Demand Optimal (【スロット非効率クエリ】)
+#### Quadrant [2]: Capacity Actual & On-Demand Optimal (JP: 【スロット非効率クエリ】 / EN: 【Slot-Inefficient Queries】)
 * **Diagnosis**: High slot consumption relative to bytes scanned, but often zero-byte (cache hits, dry runs) or small queries (averaging < 500MB).
-* **Action**: **No Action Required**. Even though they seem "inefficient," they run within the pre-purchased reservation capacity pool, incurring $\$0$ marginal cost. Switching them to On-Demand would expose the project to scanning risks for no net gain.
+* **Action**: **No Action Required**. Even though they seem "inefficient" on paper, they run within the pre-purchased reservation capacity pool, incurring $\$0$ marginal cost. Switching them to On-Demand would expose the project to scan-billing risks for no net gain.
 
-#### Quadrant [3]: On-Demand Actual & Capacity Optimal (【オンデマンド過剰支払】)
+#### Quadrant [3]: On-Demand Actual & Capacity Optimal (JP: 【オンデマンド過剰支払】 / EN: 【On-Demand Overpayment】)
 * **Diagnosis**: Massive queries scanning terabytes but using few slots, billed per-TB on On-Demand. Highly expensive.
-* **Action**: **Immediate Routing Action**. Move these project assignments into the `google-production-reservation` reservation capacity pool. Routing to reservations eliminates the per-scan billing and handles these heavy queries within the existing budget.
+* **Action**: **Immediate Routing Action**. Move these project assignments into the reservation capacity pool. Routing to reservations eliminates the per-scan billing and handles these heavy queries within the existing budget.
 
-#### Quadrant [4]: On-Demand Actual & On-Demand Optimal (【適正配置】)
+#### Quadrant [4]: On-Demand Actual & On-Demand Optimal (JP: 【適正配置】 / EN: 【Optimal Allocation】)
 * **Diagnosis**: Computational queries with tiny data scans and short durations.
 * **Action**: Continue on On-Demand or place inside a lower-priority reservation if concurrency constraints are tight.
