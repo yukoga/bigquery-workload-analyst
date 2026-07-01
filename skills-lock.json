@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "bigquery-workload-analyst": {
+      "source": "yukoga/bigquery-workload-analyst",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "3be8a1a9b86c77924fa94578973f64043fd00d3bbdfa94e9fd983927d78cc7be"
+    }
+  }
+}
